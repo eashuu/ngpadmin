@@ -32,7 +32,7 @@ function App() {
 
   return (
     <div>
-      <GoogleOAuthProvider clientId="818907771783-cnuqqmsjtfkuhk4dpujrgej5a5cgc7ji.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId="818907771783-jie204ble38jhs3priptht7cth2livgl.apps.googleusercontent.com">
         {!isLoggedIn ? (
           // Show Google Login button if not logged in
           <div style={{height:"100vh", display:"flex"}} className='justify-center items-center'>
