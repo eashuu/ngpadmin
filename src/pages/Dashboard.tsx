@@ -57,29 +57,18 @@ export function Dashboard() {
         Signature: passData?.filter(p => p.Pass === 'Signature').length || 0,
       };
 
-      // Fetch all participants with successful concert payments
-const { data: concertData, error } = await supabase
-  .from('Participants')
-  .select('Pass') // Fetch only the Pass column to minimize payload
-  .eq('Concert_Payment', 'Successful');
-
-if (error) {
-  console.error('Error fetching concert payments:', error);
-  return 0; // Handle the error or return 0 as needed
-}
-
-// Get the total number of successful concert payments
-const totalSuccessfulPayments = concertData?.length || 0;
-
-// Subtract Hackathon pass count from total successful payments
-const concertPayments = totalSuccessfulPayments - passTypes.Hackathon;
-
-console.log('Total Successful Concert Payments:', totalSuccessfulPayments);
-console.log('Hackathon Pass Count:', passTypes.Hackathon);
-console.log('Filtered Concert Payments:', concertPayments);
-
-return concertPayments;
-
+      // Get concert payments
+     // const { count: concertPayments } = await supabase
+       // .from('Participants')
+        //.select('*', { count: 'exact' })
+        //.eq('Concert_Payment', 'Successful') - passTypes[1];
+      const { data: concertData, error } = await supabase
+        .from('Participants')
+        .select('Pass') // Fetch only the Pass column to minimize payload
+        .eq('Concert_Payment', 'Successful');
+      const totalSuccessfulPayments = concertData?.length || 0;
+      const concertPayments = totalSuccessfulPayments - passTypes.Hackathon;
+      
       // Get Day 4 event counts with workshop breakdown
       const { data: day4Data } = await supabase
         .from('Participants')
