@@ -57,11 +57,14 @@ export function Dashboard() {
         Signature: passData?.filter(p => p.Pass === 'Signature').length || 0,
       };
 
-      // Get concert payments
-      const { count: concertPayments } = await supabase
-        .from('Participants')
-        .select('*', { count: 'exact' })
-        .eq('Concert_Payment', 'Successful') - passTypes[1];
+     // Get concert payments and exclude those with a Hackathon pass
+const { data: concertData } = await supabase
+  .from('Participants')
+  .select('Pass', { count: 'exact' })
+  .eq('Concert_Payment', 'Successful');
+
+const concertPayments = concertData?.filter(participant => participant.Pass !== 'Hackathon').length || 0;
+
 
       // Get Day 4 event counts with workshop breakdown
       const { data: day4Data } = await supabase
