@@ -99,7 +99,7 @@ async function fetchStats() {
       const concertPayments = totalSuccessfulPayments - passTypes.Hackathon;
       
       // Get Day 4 event counts with workshop breakdown
-      const { data: day4Data } = await supabase
+      const { data: day4Data } =  supabase
         .from('Participants')
         .select('Event_1_Day4');
 
