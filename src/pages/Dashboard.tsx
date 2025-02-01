@@ -40,58 +40,29 @@ export function Dashboard() {
   };
 
   useEffect(() => {
-async function fetchStats() {
-  try {
-    // Get total registrations
-    const { count: totalRegistrations, error: totalError } = await supabase
-      .from('Participants')
-      .select('*', { count: 'exact' });
+    async function fetchStats() {
+      // Get total registrations
+      const { count: totalRegistrations } = await supabase
+        .from('Participants')
+        .select('*', { count: 'exact' });
 
-    if (totalError) throw totalError;
-
-    // Get pass type distribution directly using SQL queries
-    const { count: generalCount, error: generalError } = await supabase
-      .from('Participants')
-      .select('*', { count: 'exact' })
-      .eq('Pass', 'General');
-
-    if (generalError) throw generalError;
-
-    const { count: hackathonCount, error: hackathonError } = await supabase
-      .from('Participants')
-      .select('*', { count: 'exact' })
-      .eq('Pass', 'Hackathon');
-
-    if (hackathonError) throw hackathonError;
-
-    const { count: signatureCount, error: signatureError } = await supabase
-      .from('Participants')
-      .select('*', { count: 'exact' })
-      .eq('Pass', 'Signature');
-
-    if (signatureError) throw signatureError;
-
-    // Format the pass types
-    const passTypes = {
-      General: generalCount || 0,
-      Hackathon: hackathonCount || 0,
-      Signature: signatureCount || 0,
-    };
-
-    return { totalRegistrations, passTypes };
-  } catch (error) {
-    console.error('Error fetching stats:', error);
-    return { totalRegistrations: 0, passTypes: { General: 0, Hackathon: 0, Signature: 0 } };
-  }
-}
-
+      // Get pass type distribution
+      const { data: passData } = await supabase
+        .from('Participants')
+        .select('Pass');
+      
+      const passTypes = {
+        General: passData?.filter(p => p.Pass === 'General').length || 0,
+        Hackathon: passData?.filter(p => p.Pass === 'Hackathon').length || 0,
+        Signature: passData?.filter(p => p.Pass === 'Signature').length || 0,
+      };
 
       // Get concert payments
      // const { count: concertPayments } = await supabase
        // .from('Participants')
         //.select('*', { count: 'exact' })
         //.eq('Concert_Payment', 'Successful') - passTypes[1];
-      const { data: concertData, error } = supabase
+      const { data: concertData, error } = await supabase
         .from('Participants')
         .select('Pass') // Fetch only the Pass column to minimize payload
         .eq('Concert_Payment', 'Successful');
@@ -99,7 +70,7 @@ async function fetchStats() {
       const concertPayments = totalSuccessfulPayments - passTypes.Hackathon;
       
       // Get Day 4 event counts with workshop breakdown
-      const { data: day4Data } =  supabase
+      const { data: day4Data } = await supabase
         .from('Participants')
         .select('Event_1_Day4');
 
@@ -115,7 +86,7 @@ day4Data?.forEach(participant => {
 
 
       // Get referral sources for successful payments, including null values as "Others"
-      const { data: referralData } =  supabase
+      const { data: referralData } = await supabase
         .from('Participants')
         .select('Reference')
         .eq('Payment', 'Successful');
@@ -127,7 +98,7 @@ day4Data?.forEach(participant => {
       });
 
       // Gate entry count
-      const { count: gateEntryCount } = supabase
+      const { count: gateEntryCount } = await supabase
         .from('Participants')
         .select('*', { count: 'exact' })
         .not('Entry_Time', 'is', null);
@@ -142,7 +113,7 @@ day4Data?.forEach(participant => {
       });
     }
 
-    //fetchStats();
+    fetchStats();
   }, []);
 
   const referralData = Object.entries(stats.referralSources)
