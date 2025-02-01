@@ -40,22 +40,51 @@ export function Dashboard() {
   };
 
   useEffect(() => {
-    async function fetchStats() {
-      // Get total registrations
-      const { count: totalRegistrations } = await supabase
-        .from('Participants')
-        .select('*', { count: 'exact' });
+async function fetchStats() {
+  try {
+    // Get total registrations
+    const { count: totalRegistrations, error: totalError } = await supabase
+      .from('Participants')
+      .select('*', { count: 'exact' });
 
-      // Get pass type distribution
-      const { data: passData } = await supabase
-        .from('Participants')
-        .select('Pass');
-      
-      const passTypes = {
-        General: passData?.filter(p => p.Pass === 'General').length || 0,
-        Hackathon: passData?.filter(p => p.Pass === 'Hackathon').length || 0,
-        Signature: passData?.filter(p => p.Pass === 'Signature').length || 0,
-      };
+    if (totalError) throw totalError;
+
+    // Get pass type distribution directly using SQL queries
+    const { count: generalCount, error: generalError } = await supabase
+      .from('Participants')
+      .select('*', { count: 'exact' })
+      .eq('Pass', 'General');
+
+    if (generalError) throw generalError;
+
+    const { count: hackathonCount, error: hackathonError } = await supabase
+      .from('Participants')
+      .select('*', { count: 'exact' })
+      .eq('Pass', 'Hackathon');
+
+    if (hackathonError) throw hackathonError;
+
+    const { count: signatureCount, error: signatureError } = await supabase
+      .from('Participants')
+      .select('*', { count: 'exact' })
+      .eq('Pass', 'Signature');
+
+    if (signatureError) throw signatureError;
+
+    // Format the pass types
+    const passTypes = {
+      General: generalCount || 0,
+      Hackathon: hackathonCount || 0,
+      Signature: signatureCount || 0,
+    };
+
+    return { totalRegistrations, passTypes };
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    return { totalRegistrations: 0, passTypes: { General: 0, Hackathon: 0, Signature: 0 } };
+  }
+}
+
 
       // Get concert payments
      // const { count: concertPayments } = await supabase
