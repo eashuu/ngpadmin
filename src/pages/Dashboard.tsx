@@ -142,7 +142,7 @@ day4Data?.forEach(participant => {
       });
     }
 
-    fetchStats();
+    //fetchStats();
   }, []);
 
   const referralData = Object.entries(stats.referralSources)
