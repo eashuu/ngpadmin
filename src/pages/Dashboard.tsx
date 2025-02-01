@@ -115,7 +115,7 @@ day4Data?.forEach(participant => {
 
 
       // Get referral sources for successful payments, including null values as "Others"
-      const { data: referralData } = await supabase
+      const { data: referralData } =  supabase
         .from('Participants')
         .select('Reference')
         .eq('Payment', 'Successful');
@@ -127,7 +127,7 @@ day4Data?.forEach(participant => {
       });
 
       // Gate entry count
-      const { count: gateEntryCount } = await supabase
+      const { count: gateEntryCount } = supabase
         .from('Participants')
         .select('*', { count: 'exact' })
         .not('Entry_Time', 'is', null);
