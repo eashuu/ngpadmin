@@ -91,7 +91,7 @@ async function fetchStats() {
        // .from('Participants')
         //.select('*', { count: 'exact' })
         //.eq('Concert_Payment', 'Successful') - passTypes[1];
-      const { data: concertData, error } = await supabase
+      const { data: concertData, error } = supabase
         .from('Participants')
         .select('Pass') // Fetch only the Pass column to minimize payload
         .eq('Concert_Payment', 'Successful');
