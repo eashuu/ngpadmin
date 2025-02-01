@@ -41,34 +41,21 @@ export function Dashboard() {
 
   useEffect(() => {
     async function fetchStats() {
-  try {
-    // Get pass type distribution using separate queries
-    const { count: generalPassCount } = await supabase
-      .from('Participants')
-      .select('*', { count: 'exact' })
-      .eq('Pass', 'General');
+      // Get total registrations
+      const { count: totalRegistrations } = await supabase
+        .from('Participants')
+        .select('*', { count: 'exact' });
 
-    const { count: hackathonPassCount } = await supabase
-      .from('Participants')
-      .select('*', { count: 'exact' })
-      .eq('Pass', 'Hackathon');
-
-    const { count: signaturePassCount } = await supabase
-      .from('Participants')
-      .select('*', { count: 'exact' })
-      .eq('Pass', 'Signature');
-
-    // Calculate total registrations by summing up the pass counts
-    const totalRegistrations =
-      (generalPassCount || 0) +
-      (hackathonPassCount || 0) +
-      (signaturePassCount || 0);
-
-    const passTypes = {
-      General: generalPassCount || 0,
-      Hackathon: hackathonPassCount || 0,
-      Signature: signaturePassCount || 0,
-    };
+      // Get pass type distribution
+      const { data: passData } = await supabase
+        .from('Participants')
+        .select('Pass');
+      
+      const passTypes = {
+        General: passData?.filter(p => p.Pass === 'General').length || 0,
+        Hackathon: passData?.filter(p => p.Pass === 'Hackathon').length || 0,
+        Signature: passData?.filter(p => p.Pass === 'Signature').length || 0,
+      };
 
       // Get concert payments
      // const { count: concertPayments } = await supabase
