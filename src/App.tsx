@@ -14,7 +14,7 @@ function App() {
       const photo = decodedToken.picture;
       console.log('Logged in as:', email); // You can store the email in state/context if needed
 
-      const access_mail = ["231ai047@drngpasc.ac.in","nadincs77@gmail.com","eashwarvenkatesan@gmail.com","23cb033@drngpit.ac.in","23ad034@drngpit.ac.in","23cb003@drngpit.ac.in","23mba101@drngpit.ac.in","23mba013@drngpit.ac.in","sdc@drngpit.ac.in","sdc@drngpasc.ac.in"]
+      const access_mail = ["221CS005@drngpasc.ac.in","231ai047@drngpasc.ac.in","nadincs77@gmail.com","eashwarvenkatesan@gmail.com","23cb033@drngpit.ac.in","23ad034@drngpit.ac.in","23cb003@drngpit.ac.in","23mba101@drngpit.ac.in","23mba013@drngpit.ac.in","sdc@drngpit.ac.in","sdc@drngpasc.ac.in"]
       // Update login status to true on successful login
       if (access_mail.includes(email)){
         setIsLoggedIn(true);
